@@ -37,7 +37,7 @@ function Dashboard() {
     try {
       await axiosInstance.delete(API_PATHS.SESSION.DELETE(sessionData));
       toast.success("Session Deleted Successfully");
-      setOpenDeleteAlert({ open: false, data: null });
+      setOpenDeleteAlert({ open: false, id: null });
       fetchAllSessions();
     } catch (error) {
       console.error("Delete failed:", error.message);
@@ -98,7 +98,7 @@ function Dashboard() {
           <Modal
             isOpen={openDeleteAlert?.open}
             onClose={() => {
-              setOpenDeleteAlert({ open: false, data: null });
+              setOpenDeleteAlert({ open: false, id: null });
             }}
             title="Delete Alert"
             hideheader={true}
@@ -106,7 +106,7 @@ function Dashboard() {
             <div>
               <DeleteSession
                 onDelete={() => deleteSession(openDeleteAlert.id)}
-                onClose={() => setOpenDeleteAlert({ open: false, data: null })}
+                onClose={() => setOpenDeleteAlert({ open: false, id: null })}
               />
             </div>
           </Modal>

@@ -1,23 +1,39 @@
-const questionAnswerPrompt = (role, experience, topicsToFocus, numberOfQuestions) => 
-    `You are an AI trained to generate technical interview questions and answers.
-Task:
-- Role: ${role}
-- Candidate Experience: ${experience} years
-- Focus Topics: ${topicsToFocus}
-- Write ${numberOfQuestions} interview questions.
-- For each question, generate a detailed but beginner-friendly answer.
-- If the answer needs a code example, add a small code block inside.
-- Keep formatting very clean.
-- Return a pure JSON array like:
-    [
-        {
-            "question": "Question here?",
-            "answer": "Anster here."
-        },
-        ...
-    ],
-Important: Do NOT add any extra text. Only return valid JSON.`
+const questionAnswerPrompt = (
+  role,
+  experience,
+  topicsToFocus,
+  numberOfQuestions
+) => `
+You are a backend API that MUST return strictly valid JSON.
 
+Task:
+Generate ${numberOfQuestions} technical interview questions and answers.
+
+Input:
+- Role: ${role}
+- Experience: ${experience} years
+- Topics: ${topicsToFocus}
+
+Requirements:
+- Each question must be clear and relevant
+- Answers must be beginner-friendly and concise
+- If including code, write it as plain text (NO markdown or triple backticks)
+- Use \\n for line breaks inside strings
+
+CRITICAL JSON RULES:
+- Output MUST be a valid JSON array
+- Do NOT include any text before or after JSON
+- Do NOT include markdown (no \`\`\`)
+- Escape all quotes properly
+
+Return EXACTLY:
+[
+  {
+    "question": "string",
+    "answer": "string"
+  }
+]
+`;
 const moreQuestionAnswerPrompt = (
   role,
   experience,
@@ -25,54 +41,66 @@ const moreQuestionAnswerPrompt = (
   numberOfQuestions,
   questions
 ) => `
-You are an AI trained to generate technical interview questions and answers.
+You are a backend API that MUST return strictly valid JSON.
 
 Task:
-- Role: ${role}
-- Candidate Experience: ${experience} years
-- Focus Topics: ${topicsToFocus}
-- Write ${numberOfQuestions} NEW interview questions.
+Generate ${numberOfQuestions} NEW technical interview questions and answers.
 
-Constraints:
-- Do NOT repeat or rephrase any of the following existing questions:
-${questions.map((q, i) => `${i + 1}. ${q}`).join("\n") || "None"}
+Input:
+Role: ${role}
+Experience: ${experience} years
+Topics: ${topicsToFocus}
 
-- Ensure all questions are unique, fresh, and different from the above list.
-- Cover a diverse range of subtopics within the given focus areas.
-- Avoid duplicates, even if phrased differently.
+Existing Questions (DO NOT repeat or rephrase):
+${questions.map((q, i) => `- ${q}`).join("\\n") || "None"}
 
-Output Requirements:
-- For each question, generate a detailed but beginner-friendly answer.
-- If needed, include a small code block inside the answer.
-- Keep formatting very clean.
+Rules:
+- Do NOT repeat or rephrase any existing question
+- All questions must be unique
+- Keep answers clear and beginner-friendly
+- If including code, represent it as plain text (NO triple backticks)
 
-Return format:
+CRITICAL JSON RULES:
+- Output MUST be a valid JSON array
+- Do NOT include any text before or after JSON
+- Do NOT include markdown (no \`\`\`)
+- Escape all line breaks using \\n
+- Escape all quotes properly
+
+Return EXACTLY in this format:
 [
   {
-    "question": "Question here?",
-    "answer": "Answer here."
+    "question": "string",
+    "answer": "string"
   }
 ]
-
-Important:
-- Return ONLY valid JSON.
-- Do NOT include any extra text, explanation, or markdown.
 `;
 
 
-const conceptExplainPrompt = (question) =>
-`You are an AI trained to generate explanations for a given interview question.
+const conceptExplainPrompt = (question) => `
+You are a backend API that MUST return strictly valid JSON.
+
 Task:
-- Explain the following interview question and its concept in depth as if you're teaching a beginner developer.
-- Question: ${question}
-- After the explanation, provide a short and clear title that summarizes the concept for the article or page header
-- If the explanation includes a code example, provide a small code block.
-- Keep the formatting very clean and clear.
-- Return the result as a valid JSON object in the following format:
+Explain the following interview question in a beginner-friendly way.
+
+Question: ${question}
+
+Requirements:
+- Explanation MUST be in Markdown format
+- You CAN use headings, lists, and code blocks
+- Keep it clean and readable
+
+CRITICAL RULES:
+- Output MUST be valid JSON
+- Do NOT include text outside JSON
+- Escape all newlines using \\n
+- Escape quotes properly
+
+Return EXACTLY:
 {
-"title": "Short title here?",
-"explanation": "Explanation here."
+  "title": "Short title",
+  "explanation": "Markdown formatted explanation"
 }
-Important: Do NOT add any extra text outside the JSON format. Only return valid JSON.`
+`;
 
 module.exports = {questionAnswerPrompt, conceptExplainPrompt, moreQuestionAnswerPrompt}
