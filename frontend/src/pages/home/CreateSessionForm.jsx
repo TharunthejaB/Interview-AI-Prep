@@ -49,8 +49,8 @@ const CreateSessionForm = () => {
         navigate(`/interview-prep/${response.data.session._id}`);
       }
     } catch (e) {
-      if (error.response && error.response.data.message) {
-        setError(error.response.data.message);
+      if (e.response && e.response.data.message) {
+        setError(e.response.data.message);
       } else {
         setError("Something went wrong");
       }
