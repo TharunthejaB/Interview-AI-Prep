@@ -7,12 +7,14 @@ import { validateEmail } from "../../utils/helper";
 import { API_PATHS } from "../../utils/apiPaths";
 import uploadImage from "../../utils/uploadImage";
 import axiosInstance from "../../utils/axiosInstance";
+import SpinnerLoader from "../../components/Loader/SpinnerLoader";
 function SignUp({ setCurrentPage }) {
   const [email, setEmail] = useState("");
   const [fullName, setFullname] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [profilePic, setProfilePic] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const { updateUser } = useContext(UserContext);
 
@@ -20,21 +22,25 @@ function SignUp({ setCurrentPage }) {
 
   const handleSignup = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     setError("");
 
     let profileImageUrl = "";
 
     if (!fullName) {
       setError("Please enter a valid email address.");
+      setIsLoading(false);
       return;
     }
     if (!validateEmail(email)) {
       setError("Please enter a valid email address.");
+      setIsLoading(false);
       return;
     }
 
     if (!password) {
       setError("Please enter the password");
+      setIsLoading(false);
       return;
     }
 
@@ -52,12 +58,13 @@ function SignUp({ setCurrentPage }) {
       const { token } = response.data;
       if (token) {
         localStorage.setItem("token", token);
+        setIsLoading(false);
         updateUser(response.data);
         navigate("/dashboard");
       }
     } catch (error) {
       console.log(error);
-
+      setIsLoading(false);
       if (error.response) {
         setError(error.response.data.message || "Server error");
       } else if (error.request) {
@@ -102,7 +109,7 @@ function SignUp({ setCurrentPage }) {
         />
         {error && <p className="text-red-500 text-xs pb-2.5">{error}</p>}
         <button type="submit" className="btn-primary">
-          Sign up
+          {isLoading && <SpinnerLoader />} Sign Up
         </button>
         <p className="text-[12px] text-slate-800 mt-3">
           Already have an account?{}{" "}

@@ -98,8 +98,8 @@ CRITICAL RULES:
 
 Return EXACTLY:
 {
-  "title": "Short title",
-  "explanation": "Markdown formatted explanation"
+  "title": ${question},
+  "explanation": "Markdown explanation"
 }
 `;
 

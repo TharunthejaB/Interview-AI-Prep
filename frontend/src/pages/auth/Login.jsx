@@ -6,10 +6,12 @@ import axiosInstance from "../../utils/axiosInstance";
 import { API_PATHS } from "../../utils/apiPaths";
 import { useContext } from "react";
 import { UserContext } from "../../context/userContext";
+import SpinnerLoader from "../../components/Loader/SpinnerLoader";
 function Login({ setCurrentPage }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const { updateUser } = useContext(UserContext);
   const navigate = useNavigate();
@@ -18,14 +20,17 @@ function Login({ setCurrentPage }) {
     e.preventDefault();
 
     setError("");
+    setIsLoading(true);
 
     if (!validateEmail(email)) {
       setError("Please enter a valid email address.");
+      setIsLoading(false);
       return;
     }
 
     if (!password) {
       setError("Please enter the password");
+      setIsLoading(false);
       return;
     }
 
@@ -38,11 +43,13 @@ function Login({ setCurrentPage }) {
 
       if (token) {
         localStorage.setItem("token", token);
+        setIsLoading(false);
         updateUser(response.data);
         navigate("/dashboard");
       }
     } catch (error) {
       console.log(error);
+      setIsLoading(false);
       if (error.response) {
         setError(error.response.data.message || "Server error");
       } else if (error.request) {
@@ -78,7 +85,7 @@ function Login({ setCurrentPage }) {
         />
         {error && <p className="text-red-500 text-xs pb-2.5">{error}</p>}
         <button type="submit" className="btn-primary">
-          Login
+          {isLoading && <SpinnerLoader />} Login
         </button>
         <p className="text-[12px] text-slate-800 mt-3">
           Don't have an account?{}{" "}

@@ -18,7 +18,6 @@ const generateInterviewQuestions = async (req, res) => {
       topicsToFocus,
       numberOfQuestions
     );
-
     const response = await axios.post(
       "https://openrouter.ai/api/v1/chat/completions",
       {
@@ -91,7 +90,6 @@ res.status(200).json(data);
 
 
   } catch (error) {
-    console.error("FULL ERROR:", error.response?.data || error.message);
 
     res.status(500).json({
       message: "Failed to generate questions",
@@ -164,7 +162,7 @@ const addMoreInterviewQuestions = async (req, res) => {
     res.status(200).json(data);
 
   } catch (error) {
-    console.error("FULL ERROR:", error.response?.data || error.message);
+
 
     res.status(500).json({
       message: "Failed to generate questions",
@@ -186,6 +184,7 @@ const generateConceptExplanation = async (req, res) => {
       "https://openrouter.ai/api/v1/chat/completions",
       {
         model: "meta-llama/llama-3-8b-instruct",
+        response_format: { type: "json_object" },
         messages: [
           {
             role: "system",
@@ -217,22 +216,15 @@ let data;
 try {
   data = JSON.parse(rawText);
 } catch (err) {
-  const match = rawText.match(/\{[\s\S]*\}/);
-
-  if (!match) throw new Error("Invalid JSON format");
-
-  const cleaned = match[0]
-    .replace(/\n/g, "\\n")
-    .replace(/\r/g, "\\r")
-    .replace(/\t/g, "\\t");
-
-  data = JSON.parse(cleaned);
+  console.error("RAW AI OUTPUT:", rawText);
+  throw new Error("Invalid JSON returned by model");
 }
 
     res.status(200).json(data);
 
   } catch (error) {
-    console.error("FULL ERROR:", error.response?.data || error.message);
+    console.log("FULL ERROR:", error.response?.data || error.message);
+    
 
     res.status(500).json({
       message: "Failed to generate",
