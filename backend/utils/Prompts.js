@@ -4,7 +4,7 @@ const questionAnswerPrompt = (
   topicsToFocus,
   numberOfQuestions
 ) => `
-You are a backend API that MUST return strictly valid JSON.
+You are a backend API that MUST Return strictly valid JSON. Do not include any text before or after the JSON.
 
 Task:
 Generate ${numberOfQuestions} technical interview questions and answers.
@@ -33,6 +33,8 @@ Return EXACTLY:
     "answer": "string"
   }
 ]
+
+
 `;
 const moreQuestionAnswerPrompt = (
   role,

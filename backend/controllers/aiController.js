@@ -80,7 +80,7 @@ try {
   console.error("RAW AI RESPONSE:", rawText);
 
   return res.status(500).json({
-    message: "JSON parse failed",
+    message: "AI Error, Please try again",
     raw: rawText,
   });
 }
